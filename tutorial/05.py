@@ -88,17 +88,15 @@ def main():
         if not load():
             print("Failed to load!\n")
         else:
-            SDL_BlitSurface(gHelloWorld, None, gScreenSurface, None)
-            SDL_UpdateWindowSurface(gWindow)
-            event = SDL_Event()
-
             stretchRect = SDL_Rect()
             stretchRect.x = 0
             stretchRect.y = 0
             stretchRect.w = SCREEN_WIDTH
             stretchRect.h = SCREEN_HEIGHT
             SDL_BlitScaled(gHelloWorld, None, gScreenSurface, stretchRect)
+            SDL_UpdateWindowSurface(gWindow)
 
+            event = SDL_Event()
             running = True
             while running:
                 while SDL_PollEvent(ctypes.byref(event)) != 0:
