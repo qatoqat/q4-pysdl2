@@ -69,6 +69,21 @@ def main():
             print("Failed to load!\n")
         else:
 
+            SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF)
+            SDL_RenderClear(gRenderer)
+            fillRect = SDL_Rect(SCREEN_WIDTH // 4, SCREEN_HEIGHT // 4, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+            SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF)
+            SDL_RenderFillRect(gRenderer, fillRect)
+
+            outlineRect = SDL_Rect(SCREEN_WIDTH // 6, SCREEN_HEIGHT // 6, SCREEN_WIDTH * 2 // 3, SCREEN_HEIGHT * 2 // 3)
+            SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF)
+            SDL_RenderDrawRect(gRenderer, outlineRect)
+            SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF)
+
+            for i in range(0, SCREEN_HEIGHT - 1, 4):
+                SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH // 2, i)
+
+            SDL_Delay(1000)
 
             topLeftViewport = SDL_Rect()
             topLeftViewport.x = 0
@@ -78,6 +93,8 @@ def main():
             SDL_RenderSetViewport(gRenderer, topLeftViewport)
 
             SDL_RenderCopy(gRenderer, gTexture, None, None)
+            SDL_RenderPresent(gRenderer)
+            SDL_Delay(1000)
 
             topRightViewport = SDL_Rect()
             topRightViewport.x = SCREEN_WIDTH // 2
@@ -86,12 +103,21 @@ def main():
             topRightViewport.h = SCREEN_HEIGHT // 2
             SDL_RenderSetViewport(gRenderer, topRightViewport)
 
+            SDL_RenderCopy(gRenderer, gTexture, None, None)
+            SDL_RenderPresent(gRenderer)
+            SDL_Delay(1000)
+
             bottomViewport = SDL_Rect()
             bottomViewport.x = 0;
             bottomViewport.y = SCREEN_HEIGHT // 2
             bottomViewport.w = SCREEN_WIDTH
             bottomViewport.h = SCREEN_HEIGHT // 2
             SDL_RenderSetViewport(gRenderer, bottomViewport)
+
+            SDL_RenderCopy(gRenderer, gTexture, None, None)
+
+            SDL_RenderPresent(gRenderer)
+            SDL_Delay(1000)
 
             event = SDL_Event()
             running = True
@@ -100,20 +126,7 @@ def main():
                     if event.type == SDL_QUIT:
                         running = False
                         break
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF)
-                SDL_RenderClear(gRenderer)
-                fillRect = SDL_Rect(SCREEN_WIDTH//4, SCREEN_HEIGHT//4, SCREEN_WIDTH//2, SCREEN_HEIGHT//2)
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0x00, 0x00, 0xFF)
-                SDL_RenderFillRect(gRenderer, fillRect)
 
-                outlineRect = SDL_Rect(SCREEN_WIDTH//6, SCREEN_HEIGHT//6, SCREEN_WIDTH*2//3, SCREEN_HEIGHT*2//3)
-                SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF)
-                SDL_RenderDrawRect(gRenderer, outlineRect)
-                SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0x00, 0xFF)
-
-                for i in range(0,SCREEN_HEIGHT-1,4):
-                    SDL_RenderDrawPoint(gRenderer, SCREEN_WIDTH // 2, i)
-                SDL_RenderPresent(gRenderer)
     close()
     return 0
 
