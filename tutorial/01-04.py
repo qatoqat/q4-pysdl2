@@ -6,12 +6,15 @@ import sys
 import ctypes
 from sdl2 import *
 from enum import Enum
+from pprint import pprint
+
 
 gWindow: SDL_Window = None
 gScreenSurface: SDL_Surface = None
 gCurrentSurface: SDL_Surface = None
 gHelloWorld: SDL_Surface = None
 gKeyPressSurfaces = {}
+fmt: SDL_PixelFormat = SDL_PixelFormat(format = 4)
 SCREEN_WIDTH = 640
 SCREEN_HEIGHT = 480
 
@@ -19,7 +22,14 @@ def loadsurface(path):
     loadedsurface: SDL_Surface = SDL_LoadBMP(bytes(path, "utf-8"))
     if not loadedsurface:
         print("Unable to load image {}! SDL Error: {}\n".format(path, SDL_GetError()))
-    return loadedsurface
+        return loadedsurface
+    optimizedsurface = SDL_ConvertSurface(loadedsurface, gScreenSurface.contents.format.contents, 0)
+    if not optimizedsurface:
+        print("Unable to optimize image {}! SDL Error: {}\n".format(path, SDL_GetError()))
+        return loadedsurface
+    SDL_FreeSurface(loadedsurface)
+    print("optimized surface loaded successfully!")
+    return optimizedsurface
 
 
 class KeyPressSurfaces(Enum):
@@ -46,6 +56,7 @@ def init():
 
         else:
             gScreenSurface = SDL_GetWindowSurface(gWindow)
+            pprint(gScreenSurface.contents.format.contents)
     return success
 
 
@@ -112,19 +123,18 @@ def main():
                     if event.type == SDL_QUIT:
                         running = False
                         break
-                    if event.type == SDL_KEYDOWN:
+                    elif event.type == SDL_KEYDOWN:
                         if event.key.keysym.sym == SDLK_LEFT:
                             gCurrentSurface = gKeyPressSurfaces[KeyPressSurfaces.KEY_PRESS_SURFACE_LEFT]
-                        if event.key.keysym.sym == SDLK_RIGHT:
+                        elif event.key.keysym.sym == SDLK_RIGHT:
                             gCurrentSurface = gKeyPressSurfaces[KeyPressSurfaces.KEY_PRESS_SURFACE_RIGHT]
-                        if event.key.keysym.sym == SDLK_UP:
+                        elif event.key.keysym.sym == SDLK_UP:
                             gCurrentSurface = gKeyPressSurfaces[KeyPressSurfaces.KEY_PRESS_SURFACE_UP]
-                        if event.key.keysym.sym == SDLK_DOWN:
+                        elif event.key.keysym.sym == SDLK_DOWN:
                             gCurrentSurface = gKeyPressSurfaces[KeyPressSurfaces.KEY_PRESS_SURFACE_DOWN]
 
                     elif event.type == SDL_KEYUP:
                         gCurrentSurface = gKeyPressSurfaces[KeyPressSurfaces.KEY_PRESS_SURFACE_DEFAULT]
-                        pass
                 SDL_BlitSurface(gCurrentSurface, None, gScreenSurface, None)
                 SDL_UpdateWindowSurface(gWindow)
     close()
