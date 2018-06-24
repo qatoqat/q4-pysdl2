@@ -21,6 +21,8 @@ class LTexture:
         self.mTexture = None
         self.mWidth = 0
         self.mHeight = 0
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.free()
     def loadfromfile(self, path):
         self.free()
         loadedsurface = IMG_Load(bytes(path, "utf-8"))
@@ -127,7 +129,7 @@ def main():
                 SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF)
                 SDL_RenderClear(gRenderer)
                 gBackgroundTexture.render(0, 0)
-                gFooTexture.render(240, 190)
+                gFooTexture.render(0, 0)
                 SDL_RenderPresent(gRenderer)
     close()
     return 0
